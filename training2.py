@@ -15,7 +15,7 @@ class RecognizeCustomForms(object):
 
         endpoint = 'https://gsdp-formrecog.cognitiveservices.azure.com/'
         key = '92ef384db39347aab454901071c00685'
-        model_id = 'e8cbeec8-7d26-496f-8323-532e122e7df6'
+        model_id = 'a8428907-2ca6-4e33-8618-1e78d173c4c0'
 
         form_recognizer_client = FormRecognizerClient(
             endpoint=endpoint, credential=AzureKeyCredential(key)
@@ -36,22 +36,72 @@ class RecognizeCustomForms(object):
             print("Form has type {}".format(form.form_type))
             # print("Form has form type confidence {}".format(form.form_type_confidence))
             # print("Form was analyzed with model with ID {}".format(form.model_id))
-            for name, field in form.fields.items():
-                # each field is of type FormField
-                # label_data is populated if you are using a model trained without labels,
-                # since the service needs to make predictions for labels if not explicitly given to it.
-                if field.label_data:
-                    print("...Field '{}' has label '{}' with a confidence score of {}".format(
-                        name,
-                        field.label_data.text,
-                        field.confidence
-                    ))
+            clinic_address = form.fields.get("clinic address")
+            if clinic_address:
+                print("Clinic address: {}".format(clinic_address.value))
+            
+            clinicName = form.fields.get("clinic name")
+            if clinicName:
+                print("Clinic name: {}" .format(clinicName.value))
 
-                print("...Label '{}' has value '{}' with a confidence score of {}".format(
-                    field.label_data.text if field.label_data else name, field.value, field.confidence
-                ))
+            items = form.fields.get("item names")
+            if items:
+                print("\t - Item Name: {}".format(items.value))
+            prices = form.fields.get("price")
+            if prices:
+                print("\t - Price: {}".format(prices.value))
+            invoiceDate = form.fields.get("invoice date")
+            if invoiceDate:
+                print("\t - Invoice Date: {}".format(invoiceDate.value))
+                patientName = form.fields.get("patientName")
+            if patientName:
+                print("\t - Patient Name: {}".format(patientName.value))
+                
+            microchip = form.fields.get("microchip")
+            customerName = form.fields.get("customer name")
+            if customerName:
+                print("\t - Customer Name: {}".format(customerName.value))
+                
+                
+            transactionNo = form.fields.get("transaction no")
+            if transactionNo:
+                print("Transaction number: {}".format(transactionNo.value))
+            quantity = form.fields.get("quantity")
+            if quantity:
+                print("quantity: {}".format(quantity.value))
+            # for name, field in form.fields.items():
+            #     # each field is of type FormField
+            #     # label_data is populated if you are using a model trained without labels,
+            #     # since the service needs to make predictions for labels if not explicitly given to it.
+        
 
-            print("-----------------------------------")
+
+            #     # if items:
+            #     #     for idx, item in enumerate(form.fields.get("item names").value):
+            #     #         print("\tItem #{}".format(idx+1))
+            #     #         item_name = form.fields.get("item names")
+            #     #         if item_name:
+            #     #             print("\t - Name: {}".format(items.value))
+            #     #         item_price = form.fields.get("price")
+            #     #         if item_price:
+            #     #             print("\t- Price: {}".format(item_price.value))
+                
+
+
+
+
+            #     if field.label_data:
+            #         print("...Field '{}' has label '{}' with a confidence score of {}".format(
+            #             name,
+            #             field.label_data.text,
+            #             field.confidence
+            #         ))
+
+            #     print("...Label '{}' has value '{}' with a confidence score of {}".format(
+            #         field.label_data.text if field.label_data else name, field.value, field.confidence
+            #     ))
+
+            # print("-----------------------------------")
         # [END recognize_custom_forms]
 
 

@@ -15,7 +15,7 @@ class RecognizeCustomForms(object):
 
         endpoint = 'https://gsdp-formrecog.cognitiveservices.azure.com/'
         key = '92ef384db39347aab454901071c00685'
-        model_id = 'a8428907-2ca6-4e33-8618-1e78d173c4c0'
+        model_id = 'fc3376a1-50d4-4246-aa6b-d0a564e42d20'
 
         form_recognizer_client = FormRecognizerClient(
             endpoint=endpoint, credential=AzureKeyCredential(key)
@@ -27,6 +27,9 @@ class RecognizeCustomForms(object):
                 model_id=model_id, form=f
             )
         forms = poller.result()
+        # we will eventually use confidence scores to decide whether to reject/accept customer data
+        #90%/0.9 threshold for 'good' - subject to change
+        #potentially anything below 70% and customer is asked to try again
 
         for idx, form in enumerate(forms):
             print("--------Recognizing Form #{}--------".format(idx+1))
@@ -45,9 +48,18 @@ class RecognizeCustomForms(object):
                 print("Clinic name: {}" .format(clinicName.value))
 
             items = form.fields.get("item names")
+            items_string = items.value
+            split = items_string.split()
+            # items: fixing this later (afternoon) to split into individual;s, waiting on Elanco
+
+            # can we access the split parts individually? possible solution
             if items:
                 print("\t - Item Name: {}".format(items.value))
             prices = form.fields.get("price")
+            prices_string = prices.value
+            prices_split = prices_string.split()
+            #accessing individual values here? split by space, assign to decimal array
+            
             if prices:
                 print("\t - Price: {}".format(prices.value))
             invoiceDate = form.fields.get("invoice date")
